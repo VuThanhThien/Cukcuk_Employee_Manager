@@ -334,8 +334,8 @@ export default {
 }
 .dialog {
   position: absolute;
-  width: 45%;
-  height: 86%;
+  /* width: 35%; */
+  /* height: 68%; */
   left: 27%;
   top: 4%;
   background-color: #fff;

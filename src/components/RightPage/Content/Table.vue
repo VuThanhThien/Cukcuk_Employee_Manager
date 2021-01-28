@@ -40,53 +40,34 @@
     >
       <thead class="has-gutter">
         <tr class="el-table__row">
-          <th fieldName="EmployeeCode" >
+          <th fieldName="EmployeeCode">
             <div class="cell">Mã nhân viên</div>
           </th>
-          <th
-            fieldName="FullName"
-          >
+          <th fieldName="FullName">
             <div class="cell">Họ và tên</div>
           </th>
-          <th
-            fieldName="GenderName"
-          >
+          <th fieldName="GenderName">
             <div class="cell">Giới tính</div>
           </th>
-          <th
-            fieldName="DateOfBirth"
-            style="text-align: center"
-          >
+          <th fieldName="DateOfBirth" style="text-align: center">
             <div class="cell">Ngày sinh</div>
           </th>
-          <th
-            fieldName="PhoneNumber"
-          >
+          <th fieldName="PhoneNumber">
             <div class="cell">Điện thoại</div>
           </th>
-          <th
-            fieldName="Email"
-          >
+          <th fieldName="Email">
             <div class="cell">Email</div>
           </th>
-          <th
-            fieldName="PositionName"
-          >
+          <th fieldName="PositionName">
             <div class="cell">Chức vụ</div>
           </th>
-          <th
-            fieldName="DepartmentName"
-          >
+          <th fieldName="DepartmentName">
             <div class="cell">Phòng ban</div>
           </th>
-          <th
-            fieldName="Salary"
-          >
-          <div class="cell" >Mức lương cơ bản</div>
+          <th fieldName="Salary">
+            <div class="cell">Mức lương cơ bản</div>
           </th>
-          <th
-            fieldName="WorkStatusName"
-          >
+          <th fieldName="WorkStatusName">
             <div class="cell">Tình trạng công việc</div>
           </th>
         </tr>
@@ -108,7 +89,7 @@
             <div class="cell">{{ employee.GenderName }}</div>
           </td>
           <td>
-            <div class="cell">{{ employee.DateOfBirth  }}</div>
+            <div class="cell">{{ format_date(employee.DateOfBirth) }}</div>
           </td>
           <td>
             <div class="cell">{{ employee.PhoneNumber }}</div>
@@ -123,7 +104,7 @@
             <div class="cell">{{ employee.DepartmentName }}</div>
           </td>
           <td>
-            <div class="cell">{{ employee.Salary }}</div>
+            <div class="cell" >{{ formatPrice(employee.Salary) }}</div>
           </td>
           <td>
             <div class="cell">{{ employee.WorkStatusName }}</div>
@@ -131,69 +112,79 @@
         </tr>
       </tbody>
     </table>
-  <!-- Popup chọn sửa hoặc xóa  -->
+    <!-- Popup chọn sửa hoặc xóa  -->
     <transition
-    name="fade"
-    enter-active-class="animated slideInDown"
-    leave-active-class="animated slideOutDown"
+      name="fade"
+      enter-active-class="animated slideInDown"
+      leave-active-class="animated slideOutDown"
     >
-    <div class="popup" v-if="isShowPopup">      
-      <div class="editEmployee">
-        <button class="btn-closepopup"  @click="closePopup">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="feather feather-x"
-          >
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-        <p>Vui lòng chọn sửa hoặc xóa nhân viên</p>
-        <br>
-        <div class="btn-popup">
-        <button type="button" class="btn-edit" @click="openDialog">Sửa
-        </button> 
-        <button class="btn-delete" type="button">Xóa
-        </button>  
+      <div class="popup" v-if="isShowPopup">
+        <div class="editEmployee">
+          <button class="btn-closepopup" @click="closePopup">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="feather feather-x"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+          <p>Vui lòng chọn sửa hoặc xóa nhân viên</p>
+          <br />
+          <div class="btn-popup">
+            <button type="button" class="btn-edit" @click="openDialog">
+              Sửa
+            </button>
+            <button class="btn-delete" type="button">Xóa</button>
+          </div>
         </div>
       </div>
-      
-    </div>  
     </transition>
   </div>
 </template>
 
 <script>
 import * as axios from "axios";
+import moment from "moment";
 export default {
-  computed:{
-    isShow(){
+  computed: {
+    isShow() {
       return this.$store.state.isShow;
-    }
+    },
   },
-  methods:{
+  methods: {
+    format_date(value) {
+      if (value) {
+        return moment(String(value)).format("DD / MM / YYYY");
+      }
+    },
+    formatPrice(value) {
+      if (value) {
+      var salary = value.toString();
+      return salary.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+      }
+    },
     openDialog() {
       this.closePopup();
       this.$store.dispatch("openDialog");
     },
-    rowOnClick(employee){
+    rowOnClick(employee) {
       console.log(employee);
       this.isShowPopup = true;
-      this.$store.dispatch("getDataFromRow", employee );
+      this.$store.dispatch("getDataFromRow", employee);
     },
-    closePopup(){
+    closePopup() {
       this.isShowPopup = false;
     },
-    updateEmployee(){
-    }
+    updateEmployee() {},
   },
   data() {
     return {
@@ -234,9 +225,8 @@ export default {
           Salary: "10000000",
           WorkStatusName: "asas",
           Email: "asdsd",
-        }
+        },
       ],
-
     };
   },
   async created() {
@@ -248,32 +238,31 @@ export default {
 </script>
 <style scoped>
 table {
-    width: 100%;
-    height: 400px;
-    margin-top:10px;
-    margin-bottom: 100px;
+  width: 100%;
+  height: 400px;
+  margin-top: 10px;
+  margin-bottom: 100px;
 }
-
 .grid-employee {
-    margin-left: 15px;
-    margin-right: 15px;
-    height: calc(100% - 125px);
-    overflow: auto;
+  margin-left: 15px;
+  margin-right: 15px;
+  height: calc(100% - 125px);
+  overflow: auto;
 }
 thead th {
-    position: sticky;
-    top: -1px;
-    background-color: #fff;  
+  position: sticky;
+  top: -1px;
+  background-color: #fff;
 }
 
-
-td, th {
-  border: 1px solid #dddddd;
+td,
+th {
+  /* border: 1px solid #dddddd; */
   padding: 8px;
   text-align: left;
 }
-tbody{
-  height:450px;
+tbody {
+  height: 450px;
   overflow: auto;
   font-family: GoogleSans-Regular !important;
   font-size: 13px !important;
@@ -289,16 +278,16 @@ tbody tr:hover {
   height: 100%;
 }
 .popup .editEmployee {
-    background-color: #cbcecd;
-    width: 18%;
-    margin-left: 20%;
-    margin-top: 150px;
-    border-radius: 10px;
-    padding: 40px;
-    font-size: 15px;
-    position: relative;
+  background-color: #cbcecd;
+  width: 18%;
+  margin-left: 20%;
+  margin-top: 150px;
+  border-radius: 10px;
+  padding: 40px;
+  font-size: 15px;
+  position: relative;
 }
-.popup .editEmployee .btn-closepopup{
+.popup .editEmployee .btn-closepopup {
   position: absolute;
   top: 5px;
   right: 5px;
@@ -306,15 +295,15 @@ tbody tr:hover {
   background-color: #cbcecd;
   border: none;
 }
-.popup .editEmployee .btn-closepopup:focus{
+.popup .editEmployee .btn-closepopup:focus {
   outline: none;
 }
-.popup .editEmployee .btn-popup{
+.popup .editEmployee .btn-popup {
   display: flex;
-  justify-content:space-around;
-
+  justify-content: space-around;
 }
-.popup .editEmployee .btn-popup .btn-edit, .btn-delete{
+.popup .editEmployee .btn-popup .btn-edit,
+.btn-delete {
   width: 70px;
   border: solid 1px #ffffff;
   margin-right: 20px;
@@ -325,7 +314,8 @@ tbody tr:hover {
   border: none;
   border-radius: 4px;
 }
-.popup .editEmployee .btn-popup .btn-edit, .btn-delete:focus{
+.popup .editEmployee .btn-popup .btn-edit,
+.btn-delete:focus {
   outline: none;
 }
 </style>
