@@ -66,12 +66,16 @@
             <div class="block-2">
               <div class="block-1">
                 <div class="fieldName">Ngày sinh</div>
-                <input
+                <datepicker
+                  :format="format_date"
+                  v-model="employee.DateOfBirth"
+                ></datepicker>
+                <!-- <input
                   class="m-combobox-input"
                   type="date"
                   autocomplete="off"
                   v-model="employee.DateOfBirth"
-                />
+                /> -->
               </div>
               <!-- Nhập giới tính  -->
               <div class="block-1">
@@ -98,12 +102,16 @@
               <!-- Ngầy cấp cmtnd/cc  -->
               <div class="block-1">
                 <div class="fieldName">Ngày cấp</div>
-                <input
+                <!-- <input
                   class="m-combobox-input"
                   type="date"
                   autocomplete="off"
                   v-model="employee.IdentityDate"
-                />
+                /> -->
+                <datepicker
+                  :format="format_date"
+                  v-model="employee.IdentityDate"
+                ></datepicker>
               </div>
             </div>
             <div class="block-2">
@@ -211,12 +219,16 @@
             <div class="block-2">
               <div class="block-1">
                 <div class="fieldName">Ngày gia nhập công ty</div>
-                <input
+                <!-- <input
                 v-model="employee.JoinDate"
                   class="m-combobox-input"
                   type="date"
                   autocomplete="off"
-                />
+                /> -->
+                <datepicker
+                  :format="format_date"
+                  v-model="employee.JoinDate"
+                ></datepicker>
               </div>
               <div class="block-1">
                 <div class="fieldName">Tình trạng công việc</div>
@@ -255,24 +267,28 @@
 </template>
 
 <script>
+import Datepicker from "vuejs-datepicker";
 import * as axios from "axios";
 import moment from "moment";
 export default {
   name: "dialog1",
   props: ["isHide"],
-  filters:{
-    formatDate(value){
-      if(value){
+  components: {
+    Datepicker,
+  },
+  filters: {
+    formatDate(value) {
+      if (value) {
         return moment(String(value)).format("DD / MM / YYYY");
       }
-    }
+    },
   },
   methods: {
-    // format_date(value) {
-    //   if (value) {
-    //     return moment(String(value)).format("DD / MM / YYYY");
-    //   }
-    // },
+    format_date(value) {
+      if (value) {
+        return moment(String(value)).format("DD / MM / YYYY");
+      }
+    },
     // formatPrice(value) {
     //   if (value) {
     //     var salary = value.toString();
