@@ -212,6 +212,7 @@
               <div class="block-1">
                 <div class="fieldName">Ngày gia nhập công ty</div>
                 <input
+                v-model="employee.JoinDate"
                   class="m-combobox-input"
                   type="date"
                   autocomplete="off"
@@ -220,6 +221,7 @@
               <div class="block-1">
                 <div class="fieldName">Tình trạng công việc</div>
                 <select
+                  v-model="employee.WorkStatus"
                   id="cboWorkStatus"
                   fieldName="CustomerGroupName"
                   fieldValue="CustomerGroupId"
@@ -254,10 +256,29 @@
 
 <script>
 import * as axios from "axios";
+import moment from "moment";
 export default {
   name: "dialog1",
   props: ["isHide"],
+  filters:{
+    formatDate(value){
+      if(value){
+        return moment(String(value)).format("DD / MM / YYYY");
+      }
+    }
+  },
   methods: {
+    // format_date(value) {
+    //   if (value) {
+    //     return moment(String(value)).format("DD / MM / YYYY");
+    //   }
+    // },
+    // formatPrice(value) {
+    //   if (value) {
+    //     var salary = value.toString();
+    //     return salary.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+    //   }
+    // },
     closeDialog() {
       this.$store.dispatch("closeDialog");
       this.$store.dispatch("getDataFromRow", {});

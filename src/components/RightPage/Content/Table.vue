@@ -104,7 +104,7 @@
             <div class="cell">{{ employee.DepartmentName }}</div>
           </td>
           <td>
-            <div class="cell" >{{ formatPrice(employee.Salary) }}</div>
+            <div class="cell">{{ formatPrice(employee.Salary) }}</div>
           </td>
           <td>
             <div class="cell">{{ employee.WorkStatusName }}</div>
@@ -143,7 +143,10 @@
             <button type="button" class="btn-edit" @click="openDialog">
               Sửa
             </button>
-            <button class="btn-delete" type="button">Xóa</button>
+            <button class="btn-delete" type="button" >
+              <!-- @click="deleteEmployee"  -->
+              Xóa
+            </button>
           </div>
         </div>
       </div>
@@ -168,8 +171,8 @@ export default {
     },
     formatPrice(value) {
       if (value) {
-      var salary = value.toString();
-      return salary.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+        var salary = value.toString();
+        return salary.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
       }
     },
     openDialog() {
@@ -184,7 +187,15 @@ export default {
     closePopup() {
       this.isShowPopup = false;
     },
-    updateEmployee() {},
+    // deleteEmployee() {
+    //   console.log(this.employee);
+    //   axios({
+    //       method: "DELETE",
+    //       url: "http://api.manhnv.net/api/employees",
+    //       data: this.employee,
+    //     }).catch((e) => console.log(e));
+    //   this.closePopup();
+    //   }
   },
   data() {
     return {
