@@ -162,6 +162,14 @@ export default {
     isShow() {
       return this.$store.state.isShow;
     },
+    getTextSearch(){
+      return this.employees.filter((post) => {
+        return(
+          post.FullName.toLowerCase().includes(this.searchContent.toLowerCase()) ||
+          post.EmployeeCode.toLowerCase().includes(this.searchContent.toLowerCase())
+        )
+      })
+    },    
   },
   methods: {
     format_date(value) {
@@ -199,6 +207,7 @@ export default {
   },
   data() {
     return {
+      searchContent: '',
       isShowPopup: false,
       employees: [
         {

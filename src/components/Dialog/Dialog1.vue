@@ -1,5 +1,5 @@
 <template>
-  <div class="modal" :class="{ isHide: isHide }">
+  <div class="modal">
     <div class="dialog-mask">
       <div draggable="true" class="dialog">
         <!-- nút x thoát dialog  -->
@@ -60,6 +60,20 @@
                   type="text"
                   v-model="employee.FullName"
                 />
+                <!-- <input 
+                type="text" 
+                v-model="employee.FullName" 
+                id="firstName" 
+                name="firstName" 
+                class="form-control" 
+                :class="{ 'is-invalid': submitted && $v.employee.FullName.$error }" 
+                />
+                <div 
+                v-if="submitted 
+                && !$v.user.firstName.required" 
+                class="invalid-feedback">
+                First Name is required
+                </div> -->
               </div>
             </div>
             <!-- Nhập ngày sinh  -->
@@ -67,7 +81,7 @@
               <div class="block-1">
                 <div class="fieldName">Ngày sinh</div>
                 <datepicker
-                  :format="format_date"
+                  :format="formatDate"
                   v-model="employee.DateOfBirth"
                 ></datepicker>
                 <!-- <input
@@ -109,7 +123,7 @@
                   v-model="employee.IdentityDate"
                 /> -->
                 <datepicker
-                  :format="format_date"
+                  :format="formatDate"
                   v-model="employee.IdentityDate"
                 ></datepicker>
               </div>
@@ -165,11 +179,17 @@
                   api="/api/customergroups"
                   class="m-control"
                 >
-                  <option value="19165ed7-212e-21c4-0428-030d4265475f">
+                  <option value="3700cc49-55b5-69ea-4929-a2925c0f334d">
                     Giám đốc
                   </option>
                   <option value="19165ed7-212e-21c4-0428-030d4265475f">
                     Nhân viên
+                  </option>
+                  <option value="25c6c36e-1668-7d10-6e09-bf1378b8dc91">
+                    Thu Ngân
+                  </option>
+                  <option value="148ed882-32b8-218e-9c20-39c2f00615e8">
+                    Nhân viên Maketting
                   </option>
                 </select>
               </div>
@@ -186,8 +206,14 @@
                   <option value="19165ed7-212e-21c4-0428-030d4265475f">
                     Phòng nhân sự
                   </option>
-                  <option value="19165ed7-212e-21c4-0428-030d4265475f">
+                  <option value="17120d02-6ab5-3e43-18cb-66948daf6128">
                     Phòng đào tạo
+                  </option>
+                  <option value="142cb08f-7c31-21fa-8e90-67245e8b283e">
+                    Phòng Maketing
+                  </option>
+                  <option value="4e272fc4-7875-78d6-7d32-6a1673ffca7c">
+                    Phòng Công Nghệ
                   </option>
                 </select>
               </div>
@@ -226,7 +252,7 @@
                   autocomplete="off"
                 /> -->
                 <datepicker
-                  :format="format_date"
+                  :format="formatDate"
                   v-model="employee.JoinDate"
                 ></datepicker>
               </div>
@@ -240,15 +266,9 @@
                   api="/api/customergroups"
                   class="m-control"
                 >
-                  <option value="19165ed7-212e-21c4-0428-030d4265475f">
-                    Đang làm việc
-                  </option>
-                  <option value="19165ed7-212e-21c4-0428-030d4265475f">
-                    Đang thử việc
-                  </option>
-                  <option value="19165ed7-212e-21c4-0428-030d4265475f">
-                    Nghỉ việc
-                  </option>
+                  <option value="1">Đang làm việc</option>
+                  <option value="2">Đang thử việc</option>
+                  <option value="0">Đã nghỉ việc</option>
                 </select>
               </div>
             </div>
@@ -261,30 +281,83 @@
             <button id="btn-save" @click="saveEmployee">Lưu</button>
           </div>
         </div>
+
+        <!-- <div v-if="errors.length">
+          <b>Please correct the following error(s):</b>
+          <ul>
+            <li v-for="error in errors" :key="error">{{ error }}</li>
+          </ul>
+        </div> -->
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { required, email } from "vuelidate/lib/validators";
 import Datepicker from "vuejs-datepicker";
 import * as axios from "axios";
 import moment from "moment";
 export default {
   name: "dialog1",
-  props: ["isHide"],
+  props: [],
   components: {
     Datepicker,
   },
-  filters: {
-    formatDate(value) {
-      if (value) {
-        return moment(String(value)).format("DD / MM / YYYY");
-      }
+  // filters: {
+  //   formatDate(value) {
+  //     if (value) {
+  //       return moment(String(value)).format("DD / MM / YYYY");
+  //     }
+  //   },
+  // },
+  validations: {
+    employee: {
+      FullName: { required },
+      EmployeeCode: { required },
+      IdentityNumber: { required },
+      Email: { required, email },
+      PhoneNumber: { required },
     },
   },
   methods: {
-    format_date(value) {
+    validEmail(email) {
+      var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(email);
+    },
+    checkForm() {
+      if (
+        this.employee.FullName &&
+        this.employee.EmployeeCode &&
+        this.employee.IdentityNumber &&
+        this.employee.Email &&
+        this.employee.PhoneNumber &&
+        this.validEmail(this.employee.Email)
+      ) {
+        return true;
+      }
+
+      if (!this.employee.FullName) {
+        console.error("missing name");
+      }
+      if (!this.employee.EmployeeCode) {
+        console.error("missing employeecode");
+      }
+      if (!this.employee.IdentityNumber) {
+        console.error("missing IdentityNumber");
+      }
+      if (!this.employee.Email) {
+        console.error("missing email");
+      } else if (!this.validEmail(this.employee.Email)) {
+        console.error("valid email required");
+      }
+      if (!this.employee.PhoneNumber) {
+        console.error("missing PhoneNumber");
+      }
+
+      return false;
+    },
+    formatDate(value) {
       if (value) {
         return moment(String(value)).format("DD / MM / YYYY");
       }
@@ -300,14 +373,19 @@ export default {
       this.$store.dispatch("getDataFromRow", {});
     },
     saveEmployee() {
-      if (this.employee.EmployeeId == null) {
+      // this.$v.$touch();
+      //   if (this.$v.$invalid) {
+      //       return;
+      //   }
+      if (this.employee.EmployeeId == null && this.checkForm()) {
         axios({
           method: "POST",
           url: "http://api.manhnv.net/api/employees",
           data: this.employee,
         }).catch((e) => console.log(e));
         console.log(this.employee);
-      } else {
+      }
+      if (this.employee.EmployeeId != null && this.checkForm()) {
         axios({
           method: "PUT",
           url: "http://api.manhnv.net/api/employees",
@@ -322,13 +400,14 @@ export default {
     // employeeTemp là object trung gian để lấy data
     //  từ rowonclick lên store, rồi lại kéo về để validate lên form
     this.employee = this.$store.state.employeeTemp;
-    this.employee.DateOfBirth = this.employee.DateOfBirth.split("T")[0];
-    this.employee.IdentityDate = this.employee.IdentityDate.split("T")[0];
-    this.employee.JoinDate = this.employee.JoinDate.split("T")[0];
+    // this.employee.DateOfBirth = this.employee.DateOfBirth.split("T")[0];
+    // this.employee.IdentityDate = this.employee.IdentityDate.split("T")[0];
+    // this.employee.JoinDate = this.employee.JoinDate.split("T")[0];
     console.log(this.employee.EmployeeId);
   },
   data() {
     return {
+      errors: [],
       isShow: false,
       display: "none",
       //biens rong
@@ -366,9 +445,6 @@ export default {
 </script>
 
 <style>
-.isHide {
-  display: none;
-}
 .dialog {
   position: absolute;
   /* width: 35%; */

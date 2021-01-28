@@ -7,7 +7,7 @@ export const store = new Vuex.Store({
         employeeTemp:{},
         isShow: false,
         activeSideBar: true,
-        
+        searchContent: '',
     },
     mutations: {
         // Mở dialog thêm nhân viên 
@@ -24,8 +24,7 @@ export const store = new Vuex.Store({
         },
         getDataFromRow(state, payload){
             state.employeeTemp = payload;
-        }
-
+        },
     },
     actions: {
         openDialog({ commit }){
@@ -39,7 +38,7 @@ export const store = new Vuex.Store({
         },
         getDataFromRow({ commit }, payload){
             commit('getDataFromRow', payload)
-        }
+        },
     },
       
 })

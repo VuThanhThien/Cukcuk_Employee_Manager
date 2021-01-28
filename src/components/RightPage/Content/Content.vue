@@ -21,7 +21,7 @@
             id="search-field"
             type="text"
             placeholder="Tìm kiếm theo Mã, Tên hoặc Số điện thoại"
-            v-model="search_content"
+            v-model="searchContent"
           />
         </div>
 
@@ -56,14 +56,14 @@ export default {
   name: "content",
   computed:{
     isShow(){
-      return this.$store.state.isShow
-    }
+      return this.$store.state.isShow;
+    },
   },
   data() {
     return {
       sel_department: "",
       sel_position: "",
-      search_content: "",
+      searchContent: "",
     };
   },
 
